@@ -44,10 +44,28 @@ class BirdsController < ApplicationController
     end
   end
 
+   #DELETE /birds/:id
+
+   def destroy
+   bird = find_a_bird
+   bird.destroy
+   head :no_content #This is the bit that responds to the frontend that the delete was successful since there usually no data sent back after a delete functionality
+   #A 204 ststus code is returned to the client
+  rescue ActiveRecord::RecordNotFound
+    send_error
+   end
+
   private
 
   def bird_params
     params.permit(:name, :species, :likes)
   end
 
+  def find_a_bird
+    bird = Bird.find(params[:id])
+  end
+
+  def send_error
+  render json: {error: "Bird not found!"}
+  end
 end
